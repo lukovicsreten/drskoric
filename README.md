@@ -4,7 +4,10 @@ Zvanični sajt porodične stomatološke ordinacije **dr Marine Škorić** iz Ža
 Jednostranični, potpuno statički sajt sa sekcijama: početna, o nama, usluge, izdvojene usluge, radovi (pre i posle),
 zašto mi, kontakt sa mapom i formom za zakazivanje.
 
-Adresa sajta: **https://lukovicsreten.github.io/drskoric/**
+Adrese sajta:
+
+- Vercel: **https://drskoric.vercel.app**
+- GitHub Pages: **https://lukovicsreten.github.io/drskoric/**
 
 ## Tehnologije
 
@@ -118,6 +121,19 @@ Sajt se automatski objavljuje na svaki push na granu `main` (workflow `.github/w
 
 **Jednokratno podešavanje:** u repou na GitHub-u otvorite **Settings → Pages** i pod **Build and deployment →
 Source** izaberite **GitHub Actions**. Tok objave pratite u kartici **Actions**.
+
+## Objava na Vercel-u
+
+Projekat je povezan sa Vercel nalogom (projekat `drskoric`). Nova verzija se objavljuje iz foldera projekta:
+
+```bash
+vercel deploy --prod
+```
+
+Na Vercel-u se sajt automatski gradi sa `base: '/'` (Vercel pri build-u postavlja promenljivu `VERCEL`),
+dok na GitHub Pages ostaje `base: '/drskoric'` – podešavanje je u `astro.config.mjs`.
+Da bi se sajt na Vercel-u objavljivao automatski na svaki push, u Vercel podešavanjima projekta
+(**Settings → Git**) povežite GitHub repo `lukovicsreten/drskoric`.
 
 ## Sopstveni domen
 
