@@ -1,0 +1,197 @@
+---
+import { Image, getImage } from 'astro:assets';
+import Icon from './Icon.astro';
+import { gallery, type GalleryLabel } from '../data/siteConfig';
+import { fitWidths } from '../utils/url';
+
+// Veća verzija svake slike za lightbox
+const full = await Promise.all(
+  gallery.map((item) => getImage({ src: item.image, format: 'webp', width: Math.min(item.image.width, 1400) })),
+);
+
+const lightboxData = gallery.map((item, i) => ({
+  src: full[i].src,
+  width: full[i].attributes.width,
+  height: full[i].attributes.height,
+  alt: item.alt,
+  title: item.title,
+  labels: item.labels,
+}));
+
+const positionClass: Record<GalleryLabel['position'], string> = {
+  full: 'top-3 left-3',
+  top: 'top-3 left-3',
+  bottom: 'top-[calc(50%+0.75rem)] left-3',
+};
+const toneClass: Record<GalleryLabel['tone'], string> = {
+  before: 'bg-navy text-white',
+  after: 'bg-teal text-white',
+  neutral: 'bg-white/95 text-navy',
+};
+---
+
+<section id="radovi" class="section bg-mint-light">
+  <div class="container-site">
+    <div class="max-w-2xl" data-reveal>
+      <p class="eyebrow">Pre i posle</p>
+      <h2 class="section-title">Naši radovi</h2>
+      <p class="section-lead">
+        Nekoliko primera iz naše ordinacije. Kliknite na fotografiju da je pogledate u većem formatu.
+      </p>
+    </div>
+
+    <ul class="mt-12 flex flex-wrap justify-center gap-5">
+      {
+        gallery.map((item, i) => (
+          <li
+            class="w-full sm:w-[calc(50%-0.625rem)] lg:w-[calc(33.333%-0.834rem)]"
+            data-reveal
+            style={`--reveal-delay: ${(i % 3) * 80}ms`}
+          >
+            <figure class="card overflow-hidden">
+              <button
+                type="button"
+                class="group relative block w-full cursor-zoom-in overflow-hidden"
+                data-gallery-index={i}
+                aria-label={`Uvećaj fotografiju: ${item.title}`}
+                aria-haspopup="dialog"
+              >
+                <Image
+                  src={item.image}
+                  alt={item.alt}
+                  widths={fitWidths(item.image, [360, 560, 800])}
+                  sizes="(min-width: 1024px) 360px, (min-width: 640px) 45vw, 92vw"
+                  class="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                />
+                {item.labels.map((label) => (
+                  <span
+                    class:list={[
+                      'absolute rounded-full px-3 py-1 text-xs font-semibold tracking-[0.14em] uppercase shadow-soft',
+                      positionClass[label.position],
+                      toneClass[label.tone],
+                    ]}
+                  >
+                    {label.text}
+                  </span>
+                ))}
+                <span class="absolute right-3 bottom-3 flex size-10 items-center justify-center rounded-full bg-white/95 text-teal opacity-90 shadow-soft transition group-hover:opacity-100">
+                  <Icon name="zoom-in" size={20} />
+                </span>
+              </button>
+              <figcaption class="px-5 py-4 font-medium text-navy">{item.title}</figcaption>
+            </figure>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <dialog
+    id="lightbox"
+    class="m-0 h-full max-h-none w-full max-w-none bg-transparent p-0 backdrop:bg-navy/90 backdrop:backdrop-blur-sm"
+    aria-label="Pregled fotografije"
+  >
+    <div class="on-dark flex h-full flex-col items-center justify-center gap-4 px-4 py-16 sm:px-20">
+      <figure class="relative flex max-h-full flex-col items-center">
+        <div class="relative inline-block">
+          <img id="lightbox-img" alt="" class="block max-h-[78vh] w-auto max-w-full rounded-2xl object-contain" />
+          <div id="lightbox-labels"></div>
+        </div>
+        <figcaption id="lightbox-caption" class="mt-4 text-center font-medium text-white" aria-live="polite"></figcaption>
+      </figure>
+
+      <button
+        type="button"
+        data-lightbox="close"
+        class="absolute top-4 right-4 flex size-12 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20"
+        aria-label="Zatvori pregled"
+      >
+        <Icon name="x" size={26} />
+      </button>
+      <button
+        type="button"
+        data-lightbox="prev"
+        class="absolute top-1/2 left-2 flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20 sm:left-5"
+        aria-label="Prethodna fotografija"
+      >
+        <Icon name="chevron-left" size={28} />
+      </button>
+      <button
+        type="button"
+        data-lightbox="next"
+        class="absolute top-1/2 right-2 flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20 sm:right-5"
+        aria-label="Sledeća fotografija"
+      >
+        <Icon name="chevron-right" size={28} />
+      </button>
+    </div>
+  </dialog>
+
+  <script type="application/json" id="gallery-data" set:html={JSON.stringify(lightboxData)} />
+</section>
+
+<script>
+  interface LightboxItem {
+    src: string;
+    width: number;
+    height: number;
+    alt: string;
+    title: string;
+    labels: { text: string; position: 'full' | 'top' | 'bottom'; tone: 'before' | 'after' | 'neutral' }[];
+  }
+
+  const dialog = document.getElementById('lightbox') as HTMLDialogElement;
+  const img = document.getElementById('lightbox-img') as HTMLImageElement;
+  const caption = document.getElementById('lightbox-caption')!;
+  const labelsEl = document.getElementById('lightbox-labels')!;
+  const items: LightboxItem[] = JSON.parse(document.getElementById('gallery-data')!.textContent || '[]');
+
+  const tone = { before: 'bg-navy text-white', after: 'bg-teal text-white', neutral: 'bg-white text-navy' };
+  const position = { full: 'top-3 left-3', top: 'top-3 left-3', bottom: 'top-[calc(50%+0.75rem)] left-3' };
+
+  let current = 0;
+  let opener: HTMLElement | null = null;
+
+  const show = (index: number) => {
+    current = (index + items.length) % items.length;
+    const item = items[current];
+    img.src = item.src;
+    img.width = item.width;
+    img.height = item.height;
+    img.alt = item.alt;
+    caption.textContent = `${item.title} (${current + 1} / ${items.length})`;
+    labelsEl.replaceChildren(
+      ...item.labels.map((label) => {
+        const span = document.createElement('span');
+        span.className = `absolute rounded-full px-3 py-1 text-xs font-semibold tracking-[0.14em] uppercase shadow-soft ${position[label.position]} ${tone[label.tone]}`;
+        span.textContent = label.text;
+        return span;
+      }),
+    );
+  };
+
+  document.querySelectorAll<HTMLButtonElement>('[data-gallery-index]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      opener = btn;
+      show(Number(btn.dataset.galleryIndex));
+      dialog.showModal();
+      dialog.querySelector<HTMLButtonElement>('[data-lightbox="close"]')!.focus();
+    });
+  });
+
+  dialog.querySelector('[data-lightbox="close"]')!.addEventListener('click', () => dialog.close());
+  dialog.querySelector('[data-lightbox="prev"]')!.addEventListener('click', () => show(current - 1));
+  dialog.querySelector('[data-lightbox="next"]')!.addEventListener('click', () => show(current + 1));
+
+  // Esc zatvara dijalog automatski (nativni <dialog>); strelice listaju fotografije
+  dialog.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') show(current - 1);
+    if (e.key === 'ArrowRight') show(current + 1);
+  });
+  // Klik na tamnu pozadinu zatvara pregled
+  dialog.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    if (target === dialog || target.classList.contains('on-dark')) dialog.close();
+  });
+  dialog.addEventListener('close', () => opener?.focus());
+</script>

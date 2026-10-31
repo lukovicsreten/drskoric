@@ -1,0 +1,65 @@
+---
+import Icon, { type IconName } from './Icon.astro';
+import Sparkle from './Sparkle.astro';
+import { siteConfig } from '../data/siteConfig';
+
+const principles: { icon: IconName; title: string; text: string }[] = [
+  { icon: 'heart-handshake', title: 'Individualan pristup', text: 'Svaki pacijent ima svoju priču, potrebe i tempo.' },
+  { icon: 'message-circle', title: 'Objašnjavamo svaki korak', text: 'Pre svake intervencije znate šta radimo i zašto.' },
+  { icon: 'smile', title: 'Opuštena atmosfera', text: 'Mirna i prijatna ordinacija, bez gužve i žurbe.' },
+  { icon: 'clipboard-list', title: 'Plan lečenja zajedno', text: 'Mogućnosti razmotrimo zajedno, a odluka je vaša.' },
+];
+---
+
+<section id="o-nama" class="section">
+  <div class="container-site grid items-center gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+    <!-- Placeholder za fotografiju doktorke: zameniti sa <Image src={...} /> kada fotografija bude spremna -->
+    <div class="relative mx-auto" data-reveal>
+      <div
+        class="flex size-64 items-center justify-center rounded-full bg-mint-light shadow-soft ring-1 ring-mint/40 sm:size-80"
+        role="img"
+        aria-label={`Mesto za fotografiju – ${siteConfig.doctor}`}
+      >
+        <span class="font-serif text-7xl font-semibold tracking-wide text-teal sm:text-8xl" aria-hidden="true">
+          {siteConfig.doctorInitials}
+        </span>
+      </div>
+      <Sparkle size={36} class="absolute top-4 right-2 text-mint" />
+      <Sparkle size={16} class="absolute right-12 -top-2 text-mint/70" />
+    </div>
+
+    <div>
+      <div data-reveal>
+        <p class="eyebrow">O nama</p>
+        <h2 class="section-title">Ordinacija u kojoj imamo vremena za vas</h2>
+        <div class="mt-6 space-y-4 text-base leading-relaxed text-ink-soft sm:text-lg">
+          <p>
+            Ordinaciju vodi <strong class="font-semibold text-navy">{siteConfig.doctor}</strong>. Od {siteConfig.since}.
+            godine u Žarkovu brinemo o zubima dece, roditelja, baka i deka – često i više generacija iste porodice.
+          </p>
+          <p>
+            Verujemo da je dobra stomatologija ona u kojoj se pacijent oseća sigurno. Zato pre svakog zahvata
+            objašnjavamo šta ćemo raditi, odgovaramo na pitanja i zajedno pravimo plan lečenja koji odgovara vašim
+            potrebama i mogućnostima.
+          </p>
+        </div>
+      </div>
+
+      <ul class="mt-10 grid gap-4 sm:grid-cols-2">
+        {
+          principles.map((p, i) => (
+            <li class="flex gap-4 rounded-card bg-mint-light p-5" data-reveal style={`--reveal-delay: ${i * 70}ms`}>
+              <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-white text-teal shadow-soft">
+                <Icon name={p.icon} size={20} />
+              </span>
+              <div>
+                <h3 class="font-sans text-base font-semibold">{p.title}</h3>
+                <p class="mt-1 text-sm leading-relaxed text-ink-soft">{p.text}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>

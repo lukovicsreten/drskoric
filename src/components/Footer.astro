@@ -1,0 +1,84 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import logo from '../assets/images/logo-monogram.png';
+import { siteConfig, navigation } from '../data/siteConfig';
+
+const { address, phone } = siteConfig;
+const year = 2026;
+---
+
+<!-- Pozadina mora biti tačno #0F2A3D (bg-navy), da se monogram logo stopi sa njom -->
+<footer class="on-dark bg-navy pb-28 text-white/80 lg:pb-0">
+  <div class="container-site grid gap-12 py-16 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr] lg:gap-10">
+    <div>
+      <Image src={logo} alt={siteConfig.name} width={220} densities={[1, 2]} format="png" class="-my-12 -ml-14 h-auto w-[220px]" />
+      <p class="max-w-xs text-sm leading-relaxed">
+        Porodična stomatološka ordinacija u Žarkovu. Od {siteConfig.since}. brinemo o zubima i osmesima cele porodice.
+      </p>
+      <a
+        href={siteConfig.facebookUrl}
+        target="_blank"
+        rel="noopener"
+        class="mt-5 inline-flex size-11 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-mint hover:text-navy"
+        aria-label="Facebook stranica ordinacije (otvara se u novom prozoru)"
+      >
+        <Icon name="facebook" size={20} />
+      </a>
+    </div>
+
+    <div>
+      <h2 class="font-sans text-xs font-semibold tracking-[0.22em] text-mint uppercase">Kontakt</h2>
+      <ul class="mt-4 space-y-3 text-sm">
+        <li class="flex gap-3">
+          <Icon name="map-pin" size={18} class="mt-0.5 shrink-0 text-mint" />
+          <span>{address.street}<br />{address.postalCode} {address.city}<br />{address.area}</span>
+        </li>
+        <li class="flex gap-3">
+          <Icon name="phone" size={18} class="mt-0.5 shrink-0 text-mint" />
+          <a href={phone.href} class="text-white hover:text-mint">{phone.display}</a>
+        </li>
+        <li class="flex gap-3">
+          <Icon name="message-circle" size={18} class="mt-0.5 shrink-0 text-mint" />
+          <a href={siteConfig.viberHref} class="text-white hover:text-mint">Viber</a>
+        </li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="font-sans text-xs font-semibold tracking-[0.22em] text-mint uppercase">Radno vreme</h2>
+      <dl class="mt-4 space-y-2 text-sm">
+        {
+          siteConfig.hours.map((h) => (
+            <div class="flex justify-between gap-4">
+              <dt>{h.days}</dt>
+              <dd class="font-medium text-white">{h.time}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+
+    <nav aria-label="Navigacija u podnožju">
+      <h2 class="font-sans text-xs font-semibold tracking-[0.22em] text-mint uppercase">Brzi linkovi</h2>
+      <ul class="mt-4 space-y-2 text-sm">
+        {
+          navigation.map((item) => (
+            <li>
+              <a href={item.href} class="hover:text-mint">
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+
+  <div class="border-t border-white/10">
+    <p class="container-site py-6 text-center text-xs leading-relaxed text-white/70">
+      © {year}
+      {siteConfig.name} · {address.street}, {address.city} · MB {siteConfig.registrationNumber}
+    </p>
+  </div>
+</footer>

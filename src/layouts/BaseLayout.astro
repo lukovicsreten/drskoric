@@ -1,0 +1,113 @@
+---
+import '../styles/global.css';
+import { siteConfig } from '../data/siteConfig';
+import { withBase } from '../utils/url';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Stomatološka ordinacija Škorić | Stomatolog Žarkovo, Čukarica',
+  description = 'Porodična stomatološka ordinacija u Žarkovu (Čukarica, Beograd): pregledi, plombe, kamenac, izbeljivanje, protetika i estetika zuba.',
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const homeUrl = new URL(withBase('/'), Astro.site).href;
+const ogImage = new URL(withBase('og-image.png'), Astro.site).href;
+const { address, phone } = siteConfig;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Dentist',
+  name: siteConfig.name,
+  url: homeUrl,
+  image: ogImage,
+  logo: ogImage,
+  telephone: phone.international,
+  foundingDate: String(siteConfig.since),
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: address.street,
+    postalCode: address.postalCode,
+    addressLocality: address.city,
+    addressRegion: address.area,
+    addressCountry: address.country,
+  },
+  areaServed: ['Žarkovo', 'Čukarica', 'Beograd'],
+  sameAs: [siteConfig.facebookUrl],
+  ...(siteConfig.hoursConfirmed && {
+    openingHours: siteConfig.hours.map((h) => h.schema).filter(Boolean),
+  }),
+};
+---
+
+<!doctype html>
+<html lang="sr-Latn">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#0F2A3D" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <link rel="icon" href={withBase('favicon.ico')} sizes="48x48" />
+    <link rel="icon" type="image/png" sizes="32x32" href={withBase('favicon-32x32.png')} />
+    <link rel="icon" type="image/png" sizes="16x16" href={withBase('favicon-16x16.png')} />
+    <link rel="apple-touch-icon" sizes="180x180" href={withBase('apple-touch-icon.png')} />
+    <link rel="manifest" href={withBase('site.webmanifest')} />
+    <link rel="sitemap" href={withBase('sitemap-index.xml')} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="sr_RS" />
+    <meta property="og:site_name" content={siteConfig.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Logo Stomatološke ordinacije Škorić" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+  </head>
+  <body>
+    <a
+      href="#sadrzaj"
+      class="sr-only z-[60] rounded-full bg-navy px-5 py-3 font-semibold text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+    >
+      Preskoči na sadržaj
+    </a>
+    <slot />
+
+    <script>
+      // Fade-up animacija pri skrolovanju; bez animacije ako korisnik to ne želi
+      const items = document.querySelectorAll<HTMLElement>('[data-reveal]');
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce || !('IntersectionObserver' in window)) {
+        items.forEach((el) => el.classList.add('is-visible'));
+      } else {
+        const io = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                io.unobserve(entry.target);
+              }
+            });
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
+        );
+        items.forEach((el) => io.observe(el));
+      }
+    </script>
+  </body>
+</html>

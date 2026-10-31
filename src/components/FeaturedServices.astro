@@ -1,0 +1,65 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import Sparkle from './Sparkle.astro';
+import { featuredServices } from '../data/siteConfig';
+import { fitWidths } from '../utils/url';
+---
+
+<section id="izdvojeno" class="section" aria-labelledby="izdvojeno-naslov">
+  <div class="container-site">
+    <div class="mx-auto max-w-2xl text-center" data-reveal>
+      <p class="eyebrow">Izdvajamo</p>
+      <h2 id="izdvojeno-naslov" class="section-title">Za lepši i svetliji osmeh</h2>
+    </div>
+
+    <div class="mt-16 space-y-20 sm:space-y-28">
+      {
+        featuredServices.map((item, i) => {
+          const reversed = i % 2 === 1;
+          return (
+            <article class="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+              <div class:list={['relative', reversed && 'lg:order-2']} data-reveal>
+                <div class="overflow-hidden rounded-[1.25rem] shadow-soft">
+                  <Image
+                    src={item.image}
+                    alt={item.imageAlt}
+                    widths={fitWidths(item.image, [400, 640, 900])}
+                    sizes="(min-width: 1024px) 540px, 92vw"
+                    class="aspect-[4/3] w-full object-cover"
+                    style={`object-position: ${item.imagePosition ?? '50% 50%'}`}
+                  />
+                </div>
+                <Sparkle
+                  size={30}
+                  class:list={['absolute -top-4 text-mint', reversed ? '-left-3' : '-right-3']}
+                />
+              </div>
+
+              <div class:list={[reversed && 'lg:order-1']} data-reveal style="--reveal-delay: 100ms">
+                <p class="eyebrow">{item.eyebrow}</p>
+                <h3 class="mt-3 text-2xl leading-tight font-semibold sm:text-3xl">{item.title}</h3>
+                <p class="mt-4 text-base leading-relaxed text-ink-soft sm:text-lg">{item.text}</p>
+                <ul class="mt-6 space-y-3">
+                  {item.points.map((point) => (
+                    <li class="flex items-start gap-3 text-[0.98rem] text-navy">
+                      <Icon name="circle-check" size={20} class="mt-0.5 shrink-0 text-teal" />
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href="#kontakt"
+                  class="mt-7 inline-flex items-center gap-2 font-semibold text-teal underline-offset-4 hover:underline"
+                >
+                  Zakažite konsultaciju
+                  <Icon name="arrow-right" size={18} />
+                </a>
+              </div>
+            </article>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>

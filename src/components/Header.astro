@@ -1,0 +1,103 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import logo from '../assets/images/logo-osmeh-header.png';
+import { siteConfig, navigation } from '../data/siteConfig';
+---
+
+<header
+  id="site-header"
+  class="sticky top-0 z-50 border-b border-transparent bg-white/90 backdrop-blur-md transition-[border-color,box-shadow] duration-300 data-[scrolled=true]:border-navy/5 data-[scrolled=true]:shadow-soft"
+>
+  <div class="container-site flex h-[4.5rem] items-center justify-between gap-4 sm:h-20">
+    <a href="#pocetna" class="shrink-0" aria-label={`${siteConfig.name} – početna`}>
+      <Image src={logo} alt={siteConfig.name} height={44} densities={[1, 2]} loading="eager" class="h-10 w-auto sm:h-11" />
+    </a>
+
+    <nav aria-label="Glavni meni" class="hidden lg:block">
+      <ul class="flex items-center gap-1">
+        {
+          navigation.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class="rounded-full px-4 py-2 text-[0.95rem] font-medium text-navy transition-colors hover:bg-mint-light hover:text-teal"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a href={siteConfig.phone.href} class="btn btn-primary hidden !min-h-11 !px-5 sm:inline-flex">
+        <Icon name="phone" size={18} />
+        Pozovite
+      </a>
+      <button
+        type="button"
+        id="menu-toggle"
+        class="inline-flex size-11 items-center justify-center rounded-full text-navy transition-colors hover:bg-mint-light lg:hidden"
+        aria-label="Otvori meni"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <span data-icon="open"><Icon name="menu" size={24} /></span>
+        <span data-icon="close" class="hidden"><Icon name="x" size={24} /></span>
+      </button>
+    </div>
+  </div>
+
+  <nav id="mobile-menu" aria-label="Mobilni meni" class="hidden border-t border-navy/5 bg-white lg:hidden">
+    <ul class="container-site flex flex-col py-3">
+      {
+        navigation.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class="flex items-center justify-between rounded-xl px-3 py-3.5 text-lg font-medium text-navy hover:bg-mint-light"
+            >
+              {item.label}
+              <Icon name="chevron-right" size={18} class="text-teal" />
+            </a>
+          </li>
+        ))
+      }
+      <li class="mt-2 pb-2">
+        <a href={siteConfig.phone.href} class="btn btn-primary w-full">
+          <Icon name="phone" size={18} />
+          Pozovite {siteConfig.phone.display}
+        </a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<script>
+  const header = document.getElementById('site-header')!;
+  const toggle = document.getElementById('menu-toggle')!;
+  const menu = document.getElementById('mobile-menu')!;
+
+  const setOpen = (open: boolean) => {
+    menu.classList.toggle('hidden', !open);
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'Zatvori meni' : 'Otvori meni');
+    toggle.querySelector('[data-icon="open"]')!.classList.toggle('hidden', open);
+    toggle.querySelector('[data-icon="close"]')!.classList.toggle('hidden', !open);
+  };
+
+  toggle.addEventListener('click', () => setOpen(menu.classList.contains('hidden')));
+  menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !menu.classList.contains('hidden')) {
+      setOpen(false);
+      toggle.focus();
+    }
+  });
+
+  const onScroll = () => header.setAttribute('data-scrolled', String(window.scrollY > 8));
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+</script>

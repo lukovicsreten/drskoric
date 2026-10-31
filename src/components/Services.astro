@@ -1,0 +1,41 @@
+---
+import Icon from './Icon.astro';
+import Sparkle from './Sparkle.astro';
+import { services } from '../data/siteConfig';
+---
+
+<section id="usluge" class="section bg-mint-light">
+  <div class="container-site">
+    <div class="max-w-2xl" data-reveal>
+      <p class="eyebrow">Usluge</p>
+      <h2 class="section-title">Sve na jednom mestu, za celu porodicu</h2>
+      <p class="section-lead">
+        Od redovnih pregleda do protetike i estetike – svaku terapiju planiramo nakon pregleda i razgovora sa vama.
+      </p>
+    </div>
+
+    <ul class="mt-12 flex flex-wrap justify-center gap-5">
+      {
+        services.map((service, i) => (
+          <li
+            class="flex w-full sm:w-[calc(50%-0.625rem)] lg:w-[calc(33.333%-0.834rem)]"
+            data-reveal
+            style={`--reveal-delay: ${(i % 3) * 80}ms`}
+          >
+            <div class="card group relative flex w-full flex-col p-7 transition duration-300 hover:-translate-y-1 hover:shadow-lift">
+              <span class="flex size-12 items-center justify-center rounded-2xl bg-mint-light text-teal transition-colors duration-300 group-hover:bg-teal group-hover:text-white">
+                <Icon name={service.icon} size={24} />
+              </span>
+              <h3 class="mt-5 text-xl leading-snug font-semibold">{service.title}</h3>
+              <p class="mt-2 text-[0.95rem] leading-relaxed text-ink-soft">{service.description}</p>
+              <Sparkle
+                size={14}
+                class="absolute top-6 right-6 text-mint opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+              />
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,40 @@
+# Zvanični Astro workflow za GitHub Pages: https://docs.astro.build/en/guides/deploy/github/
+name: Objava na GitHub Pages
+
+on:
+  # Pokreće se na svaki push na granu main
+  push:
+    branches: [main]
+  # Omogućava ručno pokretanje iz kartice Actions
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Preuzimanje koda
+        uses: actions/checkout@v7
+      - name: Instalacija, build i otpremanje sajta
+        uses: withastro/action@v6
+        with:
+          node-version: 24
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Objava na GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

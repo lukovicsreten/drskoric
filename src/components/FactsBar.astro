@@ -1,0 +1,25 @@
+---
+import Icon, { type IconName } from './Icon.astro';
+import { siteConfig } from '../data/siteConfig';
+
+const facts: { icon: IconName; label: string }[] = [
+  { icon: 'award', label: `Od ${siteConfig.since}.` },
+  { icon: 'heart-handshake', label: 'Porodična ordinacija' },
+  { icon: 'map-pin', label: `${siteConfig.address.street}, Žarkovo` },
+];
+---
+
+<div class="border-y border-navy/5 bg-white">
+  <ul class="container-site grid divide-y divide-navy/5 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+    {
+      facts.map((fact) => (
+        <li class="flex items-center justify-center gap-3 py-5 text-[0.95rem] font-medium text-navy">
+          <span class="flex size-9 items-center justify-center rounded-full bg-mint-light text-teal">
+            <Icon name={fact.icon} size={18} />
+          </span>
+          {fact.label}
+        </li>
+      ))
+    }
+  </ul>
+</div>

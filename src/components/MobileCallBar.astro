@@ -1,0 +1,20 @@
+---
+import Icon from './Icon.astro';
+import { siteConfig } from '../data/siteConfig';
+---
+
+<!-- Fiksirana donja traka – samo na telefonu i tabletu -->
+<div
+  class="fixed inset-x-0 bottom-0 z-40 border-t border-navy/10 bg-white/95 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-8px_24px_-12px_rgb(15_42_61/0.25)] backdrop-blur-md lg:hidden"
+>
+  <div class="mx-auto grid max-w-md grid-cols-2 gap-3">
+    <a href={siteConfig.phone.href} class="btn btn-primary !min-h-12">
+      <Icon name="phone" size={20} />
+      Pozovi
+    </a>
+    <a href={siteConfig.viberHref} class="btn btn-outline !min-h-12">
+      <Icon name="message-circle" size={20} />
+      Viber
+    </a>
+  </div>
+</div>

@@ -1,0 +1,120 @@
+---
+import Icon from './Icon.astro';
+import AppointmentForm from './AppointmentForm.astro';
+import { siteConfig } from '../data/siteConfig';
+
+const { address, phone, transport } = siteConfig;
+---
+
+<section id="kontakt" class="section bg-mint-light">
+  <div class="container-site">
+    <div class="max-w-2xl" data-reveal>
+      <p class="eyebrow">Kontakt i lokacija</p>
+      <h2 class="section-title">Posetite nas u Žarkovu</h2>
+      <p class="section-lead">
+        Za zakazivanje termina najbrže je da nas pozovete ili nam pišete na Viber.
+      </p>
+    </div>
+
+    <div class="mt-12 grid gap-6 lg:grid-cols-2">
+      <div class="card p-7 sm:p-9" data-reveal>
+        <ul class="space-y-6">
+          <li class="flex gap-4">
+            <span class="flex size-11 shrink-0 items-center justify-center rounded-full bg-mint-light text-teal">
+              <Icon name="map-pin" size={20} />
+            </span>
+            <div>
+              <h3 class="font-sans text-sm font-semibold tracking-[0.14em] text-ink-soft uppercase">Adresa</h3>
+              <p class="mt-1 text-lg">
+                {address.street}, {address.postalCode} {address.city}
+              </p>
+              <p class="text-ink-soft">{address.area}</p>
+              <a
+                href={siteConfig.mapLinkUrl}
+                target="_blank"
+                rel="noopener"
+                class="mt-1 inline-flex items-center gap-1 text-sm font-semibold text-teal underline-offset-4 hover:underline"
+              >
+                Otvori u Google mapama
+                <Icon name="arrow-right" size={16} />
+              </a>
+            </div>
+          </li>
+
+          <li class="flex gap-4">
+            <span class="flex size-11 shrink-0 items-center justify-center rounded-full bg-mint-light text-teal">
+              <Icon name="phone" size={20} />
+            </span>
+            <div>
+              <h3 class="font-sans text-sm font-semibold tracking-[0.14em] text-ink-soft uppercase">Telefon i Viber</h3>
+              <p class="mt-1">
+                <a href={phone.href} class="text-lg font-semibold text-teal underline-offset-4 hover:underline">
+                  {phone.display}
+                </a>
+              </p>
+              <a
+                href={siteConfig.viberHref}
+                class="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold text-teal underline-offset-4 hover:underline"
+              >
+                <Icon name="message-circle" size={16} />
+                Pišite nam na Viber
+              </a>
+            </div>
+          </li>
+
+          <li class="flex gap-4">
+            <span class="flex size-11 shrink-0 items-center justify-center rounded-full bg-mint-light text-teal">
+              <Icon name="clock" size={20} />
+            </span>
+            <div class="w-full">
+              <h3 class="font-sans text-sm font-semibold tracking-[0.14em] text-ink-soft uppercase">Radno vreme</h3>
+              <dl class="mt-2 grid max-w-xs grid-cols-[1fr_auto] gap-x-6 gap-y-1.5">
+                {
+                  siteConfig.hours.map((h) => (
+                    <>
+                      <dt class="text-ink-soft">{h.days}</dt>
+                      <dd class="text-right font-medium">{h.time}</dd>
+                    </>
+                  ))
+                }
+              </dl>
+            </div>
+          </li>
+
+          <li class="flex gap-4">
+            <span class="flex size-11 shrink-0 items-center justify-center rounded-full bg-mint-light text-teal">
+              <Icon name="bus" size={20} />
+            </span>
+            <div>
+              <h3 class="font-sans text-sm font-semibold tracking-[0.14em] text-ink-soft uppercase">Javni prevoz</h3>
+              <p class="mt-1">
+                Stanica „{transport.stop}“ je na {transport.distance} od ordinacije.
+              </p>
+              <ul class="mt-2 flex flex-wrap gap-2" aria-label="Autobuske linije">
+                {
+                  transport.lines.map((line) => (
+                    <li class="rounded-full bg-mint-light px-3 py-1 text-sm font-semibold text-teal">{line}</li>
+                  ))
+                }
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card min-h-[22rem] overflow-hidden" data-reveal style="--reveal-delay: 100ms">
+        <iframe
+          src={siteConfig.mapEmbedUrl}
+          title={`Mapa – ${siteConfig.name}, ${address.street}, ${address.city}`}
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          class="h-full min-h-[22rem] w-full border-0"
+          allowfullscreen></iframe>
+      </div>
+    </div>
+
+    <div id="zakazivanje" class="mt-6" data-reveal>
+      <AppointmentForm />
+    </div>
+  </div>
+</section>

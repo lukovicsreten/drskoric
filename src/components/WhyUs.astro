@@ -1,0 +1,34 @@
+---
+import Icon from './Icon.astro';
+import Sparkle from './Sparkle.astro';
+import { reasons } from '../data/siteConfig';
+---
+
+<section id="zasto-mi" class="section" aria-labelledby="zasto-mi-naslov">
+  <div class="container-site">
+    <div class="mx-auto max-w-2xl text-center" data-reveal>
+      <p class="eyebrow justify-center">
+        <Sparkle size={14} />
+        Zašto mi
+        <Sparkle size={14} />
+      </p>
+      <h2 id="zasto-mi-naslov" class="section-title">Brinemo o vama kao o svojoj porodici</h2>
+    </div>
+
+    <ul class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        reasons.map((reason, i) => (
+          <li data-reveal style={`--reveal-delay: ${i * 80}ms`} class="flex">
+            <div class="card flex w-full flex-col items-start border border-navy/5 p-7">
+              <span class="flex size-12 items-center justify-center rounded-2xl bg-teal text-white">
+                <Icon name={reason.icon} size={24} />
+              </span>
+              <h3 class="mt-5 text-xl leading-snug font-semibold">{reason.title}</h3>
+              <p class="mt-2 text-[0.95rem] leading-relaxed text-ink-soft">{reason.text}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

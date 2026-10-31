@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import FactsBar from '../components/FactsBar.astro';
+import About from '../components/About.astro';
+import Services from '../components/Services.astro';
+import FeaturedServices from '../components/FeaturedServices.astro';
+import Gallery from '../components/Gallery.astro';
+import WhyUs from '../components/WhyUs.astro';
+import Contact from '../components/Contact.astro';
+import Footer from '../components/Footer.astro';
+import MobileCallBar from '../components/MobileCallBar.astro';
+---
+
+<BaseLayout>
+  <Header />
+  <main id="sadrzaj">
+    <Hero />
+    <FactsBar />
+    <About />
+    <Services />
+    <FeaturedServices />
+    <Gallery />
+    <WhyUs />
+    <Contact />
+  </main>
+  <Footer />
+  <MobileCallBar />
+</BaseLayout>

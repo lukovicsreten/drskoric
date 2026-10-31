@@ -1,0 +1,58 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import Sparkle from './Sparkle.astro';
+import pregled from '../assets/images/pregled.jpg';
+import { siteConfig } from '../data/siteConfig';
+---
+
+<section id="pocetna" class="relative overflow-hidden bg-gradient-to-b from-mint-light to-white">
+  <div
+    class="pointer-events-none absolute -top-32 -right-40 size-[28rem] rounded-full bg-mint/15 blur-3xl"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="container-site relative grid items-center gap-12 pt-10 pb-16 sm:pt-16 lg:grid-cols-[1.05fr_1fr] lg:gap-16 lg:pt-20 lg:pb-24">
+    <div data-reveal>
+      <p class="eyebrow">
+        <Sparkle size={14} />
+        Stomatološka ordinacija · Žarkovo
+      </p>
+      <h1 class="mt-5 text-[2.6rem] leading-[1.08] font-semibold tracking-tight sm:text-6xl lg:text-[4.1rem]">
+        Zdrav osmeh za celu porodicu
+      </h1>
+      <p class="mt-6 max-w-xl text-lg leading-relaxed text-ink-soft sm:text-xl">
+        Porodična stomatološka ordinacija u Žarkovu. Od {siteConfig.since}. brinemo o vašim zubima pažljivo, strpljivo i
+        bez žurbe.
+      </p>
+      <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+        <a href="#kontakt" class="btn btn-primary">
+          <Icon name="calendar-check" size={20} />
+          Zakažite pregled
+        </a>
+        <a href={siteConfig.phone.href} class="btn btn-outline">
+          <Icon name="phone" size={18} />
+          Pozovite {siteConfig.phone.display}
+        </a>
+      </div>
+    </div>
+
+    <div class="relative mx-auto w-full max-w-md lg:max-w-none" data-reveal style="--reveal-delay: 120ms">
+      <div class="absolute -inset-3 -z-0 rotate-3 rounded-[2rem] bg-mint/20" aria-hidden="true"></div>
+      <div class="relative overflow-hidden rounded-[1.75rem] shadow-lift ring-8 ring-white">
+        <Image
+          src={pregled}
+          alt="Stomatološki pregled – stomatolog ogledalcem i sondom pregleda zube pacijentkinje"
+          widths={[400, 640, 820, 1000]}
+          sizes="(min-width: 1024px) 520px, (min-width: 640px) 448px, 92vw"
+          loading="eager"
+          priority
+          class="aspect-[4/5] w-full object-cover object-[50%_40%]"
+        />
+      </div>
+      <Sparkle size={44} class="absolute -top-5 -right-3 text-mint drop-shadow-sm sm:-right-5" />
+      <Sparkle size={20} class="absolute top-8 -right-8 hidden text-mint/70 sm:block" />
+    </div>
+  </div>
+</section>
