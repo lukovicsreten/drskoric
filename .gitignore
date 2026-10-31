@@ -17,3 +17,8 @@ Thumbs.db
 .vscode/
 .idea/
 npm-debug.log*
+
+# Vercel (lokalno povezivanje projekta)
+.vercel/
+
+.vercel
